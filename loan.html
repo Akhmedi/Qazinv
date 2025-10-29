@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кредитный калькулятор - Qazinv</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        orange: '#FF6B00',
+                        darkgray: '#1E1E1E',
+                        lightgray: '#F5F5F5',
+                        blue: '#1A73E8'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="font-inter bg-lightgray">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-darkgray">
+                        Qaz<span class="text-orange">inv</span>
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="index.html" class="text-gray-500 hover:text-orange px-3 py-2 text-sm font-medium transition-colors">Главная</a>
+                        <a href="loan.html" class="text-darkgray hover:text-orange px-3 py-2 text-sm font-medium transition-colors">Кредиты</a>
+                        <a href="invest.html" class="text-gray-500 hover:text-orange px-3 py-2 text-sm font-medium transition-colors">Инвестиции</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="fade-in py-12">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-darkgray mb-4">
+                    📊 Кредитный калькулятор
+                </h1>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Рассчитайте ежемесячный платёж и общую стоимость кредита перед принятием важного финансового решения
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Calculator Form -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 hover-lift">
+                    <h2 class="text-2xl font-bold text-darkgray mb-6">Параметры кредита</h2>
+
+                    <div class="space-y-6">
+                        <div>
+                            <label for="amount" class="block text-sm font-semibold text-darkgray mb-2">
+                                Сумма кредита (₸)
+                            </label>
+                            <input
+                                type="number"
+                                id="amount"
+                                placeholder="1000000"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange focus:border-orange transition-all"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="rate" class="block text-sm font-semibold text-darkgray mb-2">
+                                Процентная ставка (% годовых)
+                            </label>
+                            <input
+                                type="number"
+                                id="rate"
+                                placeholder="15"
+                                step="0.1"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange focus:border-orange transition-all"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="term" class="block text-sm font-semibold text-darkgray mb-2">
+                                Срок кредита (месяцев)
+                            </label>
+                            <input
+                                type="number"
+                                id="term"
+                                placeholder="12"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange focus:border-orange transition-all"
+                            >
+                        </div>
+
+                        <button
+                            onclick="calculateLoan()"
+                            class="w-full bg-orange hover:bg-orange/90 text-white py-3 rounded-xl font-semibold text-lg transition-all shadow-lg hover-lift"
+                        >
+                            Рассчитать платёж
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 hover-lift">
+                    <h2 class="text-2xl font-bold text-darkgray mb-6">Результат расчёта</h2>
+
+                    <div id="results" class="space-y-4 text-center">
+                        <div class="bg-lightgray rounded-xl p-6">
+                            <div class="text-3xl font-bold text-orange mb-2" id="monthlyPayment">
+                                125 000 ₸
+                            </div>
+                            <div class="text-sm text-gray-600">Ежемесячный платёж</div>
+                        </div>
+
+                        <div class="bg-lightgray rounded-xl p-6">
+                            <div class="text-2xl font-bold text-darkgray mb-2" id="totalAmount">
+                                1 500 000 ₸
+                            </div>
+                            <div class="text-sm text-gray-600">Общая сумма выплат</div>
+                        </div>
+
+                        <div class="bg-lightgray rounded-xl p-6">
+                            <div class="text-2xl font-bold text-red-500 mb-2" id="overpayment">
+                                500 000 ₸
+                            </div>
+                            <div class="text-sm text-gray-600">Переплата</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-4 bg-blue/10 rounded-xl">
+                        <p class="text-sm text-gray-700">
+                            💡 <strong>Совет:</strong> Этот калькулятор поможет оценить финансовую нагрузку перед принятием решения о кредите.
+                            Рекомендуется, чтобы ежемесячный платёж не превышал 30% от вашего дохода.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="mt-12 bg-white rounded-2xl shadow-lg p-8">
+                <h3 class="text-2xl font-bold text-darkgray mb-6 text-center">
+                    Как работает расчёт кредита?
+                </h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl mb-4">🧮</div>
+                        <h4 class="font-semibold text-darkgray mb-2">Аннуитетный платёж</h4>
+                        <p class="text-sm text-gray-600">Используем формулу аннуитетного платежа для равномерных выплат</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl mb-4">📈</div>
+                        <h4 class="font-semibold text-darkgray mb-2">Точные расчёты</h4>
+                        <p class="text-sm text-gray-600">Все расчёты основаны на стандартных банковских формулах</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl mb-4">💰</div>
+                        <h4 class="font-semibold text-darkgray mb-2">Полная картина</h4>
+                        <p class="text-sm text-gray-600">Видите и ежемесячный платёж, и общую переплату</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-darkgray text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="text-2xl font-bold">
+                        Qaz<span class="text-orange">inv</span>
+                    </div>
+                    <p class="text-gray-400 mt-2">Умный путь к финансовой осознанности</p>
+                </div>
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400">© 2025 Qazinv. Все права защищены.</p>
+                    <p class="text-gray-400">Email: <a href="mailto:info@qazinv.kz" class="text-orange hover:underline">info@qazinv.kz</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function calculateLoan() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const rate = parseFloat(document.getElementById('rate').value) / 100 / 12;
+            const term = parseInt(document.getElementById('term').value);
+
+            if (!amount || !rate || !term) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+
+            // Формула аннуитетного платежа
+            const monthlyRate = rate;
+            const monthlyPayment = amount * (monthlyRate * Math.pow(1 + monthlyRate, term)) / (Math.pow(1 + monthlyRate, term) - 1);
+            const totalAmount = monthlyPayment * term;
+            const overpayment = totalAmount - amount;
+
+            // Обновляем результаты
+            document.getElementById('monthlyPayment').textContent =
+                new Intl.NumberFormat('kk-KZ').format(Math.round(monthlyPayment)) + ' ₸';
+            document.getElementById('totalAmount').textContent =
+                new Intl.NumberFormat('kk-KZ').format(Math.round(totalAmount)) + ' ₸';
+            document.getElementById('overpayment').textContent =
+                new Intl.NumberFormat('kk-KZ').format(Math.round(overpayment)) + ' ₸';
+        }
+    </script>
+</body>
+</html>
